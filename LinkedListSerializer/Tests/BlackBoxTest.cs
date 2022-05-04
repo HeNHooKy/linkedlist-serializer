@@ -3,6 +3,7 @@ using SerializerTests.Implementations;
 using SerializerTests.Nodes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using XCWorker.Tests;
 using Xunit;
@@ -11,21 +12,21 @@ using Xunit.Abstractions;
 namespace LinkedListSerialization.Tests
 {
     /// <summary>
-    /// Test cases for DeepCopy methods test
+    /// Serialize - deserialize blackbox test.
     /// </summary>
-    public class DeepCopyTest
+    public class BlackBoxTest
     {
         private readonly ITestOutputHelper output;
 
         public object YourImplementation { get; private set; }
 
-        public DeepCopyTest(ITestOutputHelper output)
+        public BlackBoxTest(ITestOutputHelper output)
         {
             this.output = output;
         }
 
         /// <summary>
-        /// Generates new list of nodes, makes deepCopy and asserts that original and copy are equals 
+        /// Generates new list of nodes, makes serialize and deserialize, and then asserts that original and copy are equals.
         /// </summary>
         [Theory]
         [MemberData(nameof(GetTestKit))]
@@ -37,21 +38,35 @@ namespace LinkedListSerialization.Tests
 
             var serializer = new JohnSmithSerializer();
 
-            var deepCopyTask = serializer.DeepCopy(head);
+            using var memory = new MemoryStream();
+
+            var serializeTask = serializer.Serialize(head, memory);
 
             var start = DateTime.Now;
-
-            deepCopyTask.Start();
-            ListNode newHead = deepCopyTask.Result;
-
+            serializeTask.Start();
+            serializeTask.Wait();
             var end = DateTime.Now;
 
             var avgTimePerNode = (end - start) / testData.CountOfNodes;
 
-            Assert.True(ListNodeComparer.Compare(head, newHead));
-
-            output.WriteLine($"Deep copy spent {avgTimePerNode.Ticks} ticks per node on " +
+            output.WriteLine($"Serialize spent {avgTimePerNode.Ticks} ticks per node on " +
                 $"average for execution with {testData.CountOfNodes} nodes.");
+
+            memory.Position = 0;
+
+            var deserializeTask = serializer.Deserialize(memory);
+
+            start = DateTime.Now;
+            deserializeTask.Start();
+            var newHead = deserializeTask.Result;
+            end = DateTime.Now;
+
+            avgTimePerNode = (end - start) / testData.CountOfNodes;
+
+            output.WriteLine($"Deserialize spent {avgTimePerNode.Ticks} ticks per node on " +
+                $"average for execution with {testData.CountOfNodes} nodes.");
+
+            Assert.True(ListNodeComparer.Compare(head, newHead));
         }
 
         public static IEnumerable<object[]> GetTestKit()
