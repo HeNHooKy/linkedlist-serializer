@@ -1,5 +1,6 @@
 ﻿using LinkedListSerializer.Tests.Tools;
 using SerializerTests.Implementations;
+using SerializerTests.Interfaces;
 using SerializerTests.Nodes;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace LinkedListSerialization.Tests
                 ? ListNodeGenerator.GenerateRandomList(testData.CountOfNodes)
                 : ListNodeGenerator.GenerateList(testData.CountOfNodes);
 
-            var serializer = new JohnSmithSerializer();
+            IListSerializer serializer = new JohnSmithSerializer();
 
             var deepCopyTask = serializer.DeepCopy(head);
 
@@ -78,6 +79,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 10,
                     TurnOnRandom = true
                 }
@@ -93,6 +95,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 100,
                     TurnOnRandom = true
                 }
@@ -108,6 +111,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 1000,
                     TurnOnRandom = true
                 }
@@ -123,6 +127,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 10000,
                     TurnOnRandom = true
                 }
@@ -138,6 +143,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 10000,
                     TurnOnRandom = false
                 }
@@ -153,6 +159,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 100000,
                     TurnOnRandom = false
                 }
@@ -168,6 +175,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 1000000,
                     TurnOnRandom = false
                 }
@@ -183,6 +191,7 @@ namespace LinkedListSerialization.Tests
             {
                 new TestData
                 {
+                    Serializer = new JohnSmithSerializer(),
                     CountOfNodes = 10000000,
                     TurnOnRandom = false
                 }
@@ -204,7 +213,10 @@ namespace LinkedListSerialization.Tests
             /// Random ref generation switch.
             /// </summary>
             public bool TurnOnRandom { get; set; }
+            /// <summary>
+            /// Serialize implementation.
+            /// </summary>
+            public IListSerializer Serializer { get; set; }
         }
-
     }
 }

@@ -21,6 +21,11 @@ namespace SerializerTests.Implementations
         {
             return new Task<ListNode>(() =>
             {
+                if(head == null)
+                {
+                    return null;
+                }
+
                 //Dictionary with key - node in original list, and value - node in copy list
                 var nodeDict = new Dictionary<ListNode, ListNode>();
 
@@ -59,6 +64,11 @@ namespace SerializerTests.Implementations
         {
             return new Task(() =>
             {
+                if(head == null)
+                {
+                    return;
+                }
+
                 var node = head;
                 var nodeDict = new Dictionary<ListNode, int>(); 
                 //we can create some specific dict realization for this task to make Serialize for unlimited list.
