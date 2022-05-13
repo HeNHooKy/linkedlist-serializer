@@ -101,7 +101,7 @@ namespace SerializerTests.Implementations
             copiedNode.Previous = TryGetFromNodeDict(nodeDict, node.Previous);
             copiedNode.Next = TryGetFromNodeDict(nodeDict, node.Next);
             copiedNode.Random = TryGetFromNodeDict(nodeDict, node.Random);
-            copiedNode.Data = node.Data;
+            copiedNode.Data = node.Data; //unmutable
 
             return copiedNode;
         }
